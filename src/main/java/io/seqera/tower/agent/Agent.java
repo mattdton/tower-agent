@@ -46,6 +46,8 @@ import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Command(
         name = "tw-agent",
@@ -157,6 +159,13 @@ public class Agent implements Runnable {
      */
     private void execCommand(CommandRequest message) {
         CommandResponse response;
+
+        Pattern pattern = Pattern.compile("qstat",Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(message.getCommand());
+        boolean matchFound = matcher.find();
+        if(matchFound){
+            logger.info("TOWER-AGENT qstat regex find");
+        }
 
         try {
             Process process = new ProcessBuilder()
