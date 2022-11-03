@@ -163,11 +163,15 @@ public class Agent implements Runnable {
         Pattern pattern = Pattern.compile("qstat",Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(message.getCommand());
         boolean matchFound = matcher.find();
+
+
         if(matchFound){
-            logger.info("TOWER-AGENT qstat regex find");
+            logger.trace("TOWER-AGENT qstat replacement");
+            message = new CommandRequest(message.getId(),"qstat -f | { egrep '(Job Id:|job_state =)' || true; }");
         }
 
         try {
+            logger.trace(message.toString());
             Process process = new ProcessBuilder()
                     .command("sh", "-c", message.getCommand())
                     .redirectErrorStream(true)
